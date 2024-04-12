@@ -5,6 +5,8 @@
 
 namespace fs = std::filesystem;
 
+using namespace std;
+
 namespace tools
 {
     bool export_from_file(const std::string& FILEname, std::string& evar)
@@ -77,9 +79,10 @@ namespace tools
     }
 }
 
-void eff(const std::vector<std::string>& args)
+void eff(const vector<string> &args)
 {
-    std::string content; content = "";                      // Defines content and then makes sure that content is an empty string
+    // Defines content and then makes sure that content is an empty string
+    std::string content; content = "";
     if (args::find_arg(args, "-f") && args::find_arg(args, "-rw"))
     {
         std::string backup_file = "/tmp/tmp_backup";

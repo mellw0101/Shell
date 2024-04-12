@@ -9,38 +9,39 @@
 #include <vector>
 
 // sudo g++ -o /bin/cmks /usb/compiler.cpp
+using namespace std;
 
-std::map<int, std::promise<int>> promiseMap;
+map<int, promise<int>> promiseMap;
 
-std::string get_HOME_var()
+string get_HOME_var()
 {
-    const char* env_var = std::getenv("HOME");
+    const char* env_var = getenv("HOME");
     if (env_var == nullptr)
     {
         // Handle the case where PATH is not set or is empty
         return "";
     }
-    return std::string(env_var);
+    return string(env_var);
 }
 
-void createStaticLibrary(const std::string& outputLibrary, const std::vector<std::string>& objectFiles)
+void createStaticLibrary(const string &outputLibrary, const vector<string> &objectFiles)
 {
-    std::string command = "ar rcs " + outputLibrary;
+    string command = "ar rcs " + outputLibrary;
 
-    for (const std::string& objFile : objectFiles)
+    for (const string &objFile : objectFiles)
     {
         command += " " + objFile; // Add each object file to the command
     }
 
-    int result = std::system(command.c_str());
+    int result = system(command.c_str());
 
     if (result == 0)
     {
-        std::cout << "Static library '" << outputLibrary << "' created successfully." << std::endl;
+        cout << "Static library '" << outputLibrary << "' created successfully." << endl;
     }
     else
     {
-        std::cerr << "Error creating static library '" << outputLibrary << "'." << std::endl;
+        cerr << "Error creating static library '" << outputLibrary << "'." << endl;
     }
 }
 

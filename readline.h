@@ -9,10 +9,11 @@
 #include <filesystem>
 #include <fstream>
 
+using namespace std;
 
 class SimpleReadline {
 private:
-    std::vector<std::string> history;
+    vector<string> history;
     struct termios orig_termios;
 
     void enableRawMode();
@@ -25,8 +26,8 @@ public:
     ~SimpleReadline();
 
     std::string readLine();
-    void loadHistoryFromFile(const std::string &filePath);
-    void appendHistoryToFile(const std::string &line, const std::string &filePath);
+    void loadHistoryFromFile(const string &filePath);
+    void appendHistoryToFile(const string &line, const string &filePath);
 };
 
 #endif // READLINE_H
