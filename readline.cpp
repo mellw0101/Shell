@@ -203,9 +203,9 @@ string SimpleReadline::readLine()
             {
                 line.erase(cursorPos - 1, 1);
                 cursorPos--;
-                std::cout << "\033[2K\r" << prompt << line;
-                std::cout << "\033[" << (cursorPos + length) << "G";
-                std::cout.flush();
+                cout << "\033[2K\r" << prompt << line;
+                cout << "\033[" << (cursorPos + length) << "G";
+                cout.flush();
                 continue;
             }
 
