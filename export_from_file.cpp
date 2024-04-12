@@ -7,30 +7,46 @@ namespace fs = std::filesystem;
 
 namespace tools
 {
-    bool export_from_file(const std::string& FILEname, std::string& evar) {
-        if (!fs::exists(FILEname)) {         // if target file does not exist
+    bool export_from_file(const std::string& FILEname, std::string& evar)
+    {
+        // if target file does not exist
+        if (!fs::exists(FILEname))
+        {
             error_message_no_halt("export_from_file", "target file '" + FILEname + "' does not exist");
             return false;
         }
-        if (fs::is_directory(FILEname)) {    // if target file is a directory
+
+        // if target file is a directory
+        if (fs::is_directory(FILEname))
+        {
             error_message_no_halt("export_from_file", "'" + FILEname + "' is a directory");
             return false;
         }
-        if (fs::is_empty(FILEname)) {        // if target file is empty
+        
+        // if target file is empty
+        if (fs::is_empty(FILEname))
+        {
             error_message_no_halt("export_from_file", "'" + FILEname + "' is empty");
             return false;
         }
         std::ifstream inFile;
+        
         inFile.open(FILEname);
-        if (!inFile.is_open()) {             // if function was unable to open the file
+        // if function was unable to open the file
+        if (!inFile.is_open())
+        {             
             error_message_no_halt("export_from_file", "Can't open '" + FILEname + "'");
             return false;
         }
+
         std::string var;
         std::stringstream buffer;
-        while (getline(inFile, var)) {
+        
+        while (getline(inFile, var))
+        {
             buffer << var << '\n';
         }
+        
         evar = buffer.str();
         inFile.close();
         return true;
@@ -112,23 +128,32 @@ void eff(const std::vector<std::string>& args)
         }
         return;
     }
-    if (args::find_arg(args, "-f")) {
+    
+    if (args::find_arg(args, "-f"))
+    {
         if (!tools::export_from_file(args[1], content))
+        {
             return;
+        }
         string_manipulation::eff_search_string(content, args::processArgs(args, "-f"));
         return;
     }
-    if (args.size() != 2) {
+    
+    if (args.size() != 2)
+    {
         tools::eff_usage();
         return;
     }
+
     if (!tools::export_from_file(args[1], content))
     {
         return;
     }
+
     if (check_extension(args[1], ".c") || check_extension(args[1], ".cpp"))
     {
         tools::use_c_cpp_syntax(content);
     }
+
     std::cout << "File content = '( \n\n" << content << "\n)'End of FILE!!!\n";
 }
