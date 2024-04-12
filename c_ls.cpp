@@ -2,23 +2,33 @@
 #include <iostream>
 
 namespace fs = std::filesystem;
-namespace c_ls_tools {
-    bool is_executable(const fs::directory_entry& entry) {
+
+namespace c_ls_tools
+{
+    bool is_executable(const fs::directory_entry& entry)
+    {
         struct stat st;
-        if (lstat(entry.path().c_str(), &st) == 0) {
+        if (lstat(entry.path().c_str(), &st) == 0)
+        {
             return (st.st_mode & S_IXUSR) != 0;
         }
         return false;
     }
-    bool endsWithExtension(const fs::directory_entry& entry, const std::string& extension) {
+
+    bool endsWithExtension(const fs::directory_entry& entry, const std::string& extension)
+    {
         std::string entryPath = entry.path().string();
         size_t dotPosition = entryPath.rfind('.');
-        if (dotPosition != std::string::npos) {             // Compare the entry's extension with the desired extension (case-insensitive)
+        
+        // Compare the entry's extension with the desired extension (case-insensitive)
+        if (dotPosition != std::string::npos)
+        {
             std::string entryExtension = entryPath.substr(dotPosition);
             return entryExtension == extension;
         }
         return false;                                       // No extension found in the entry's path
     }
+    
     void c_ls(const std::string& full_PATH_to_dir, bool list_hidden = false) {
         std::cout << "Contents of directory ( " << full_PATH_to_dir << " ):\n";
         try {
@@ -54,7 +64,8 @@ namespace c_ls_tools {
     }
 }
 
-void c_ls(const std::vector<std::string>& args) {
+void c_ls(const std::vector<std::string>& args)
+{
     if (args[1] == "-h") {
         if (args.size() == 4) {
             std::string directoryName = args[2] + " " + args[3];
