@@ -1,27 +1,37 @@
 #include "string_manipulation.h"
 #include "base_tools.h"
 
-namespace string_manipulation   {
-    bool eff_search_string_old(std::string& targetstring, const std::string& wordToFind) {
-        if (wordToFind == "err1") {
+namespace string_manipulation
+{
+    bool eff_search_string_old(std::string& targetstring, const std::string& wordToFind)
+    {
+        if (wordToFind == "err1")
+        {
             std::cerr << "Error: find requires an argument." << std::endl;
             return false;
         }
+
         // Create a regular expression pattern to match the whole word
         std::regex wordPattern("\\b" + wordToFind + "\\b");
 
         // Search for the whole word in the string
         std::smatch match;
-        if (std::regex_search(targetstring, match, wordPattern)) {
+        if (std::regex_search(targetstring, match, wordPattern))
+        {
             std::cout << "eff_search_string: string '" << wordToFind << "' found at position " << match.position() << std::endl;
             return true;
-        } else {
+        }
+        else
+        {
             std::cout << "eff_search_string: Word '" << wordToFind << "' not found" << std::endl;
             return false;
         }
     }
-    bool eff_search_string(const std::string& targetstring, const std::string& wordToFind) {
-        if (wordToFind.empty()) {
+
+    bool eff_search_string(const std::string& targetstring, const std::string& wordToFind)
+    {
+        if (wordToFind.empty())
+        {
             std::cerr << "Error: find requires a non-empty argument." << std::endl;
             return false;
         }
@@ -36,23 +46,31 @@ namespace string_manipulation   {
         bool found = false;
 
         // Loop through lines of the input string
-        while (std::getline(ss, line)) {
+        while (std::getline(ss, line))
+        {
             std::smatch match;
             std::string::const_iterator searchStart(line.cbegin());
 
             // Search for the whole word in the line
-            while (std::regex_search(searchStart, line.cend(), match, wordPattern)) {
+            while (std::regex_search(searchStart, line.cend(), match, wordPattern))
+            {
                 found = true;
                 std::cout << "eff_search_string: '" << wordToFind << "' \033[32mfound\033[0m at Line " << lineNum << ":" << match.position() << std::endl;
                 searchStart = match.suffix().first;
             }
             lineNum++;
         }
+
         if (!found)
+        {
             error_message_no_halt("eff_search_string", "'" + wordToFind + "' not found");
+        }
+
         return found;
     }
-    bool eff_replace_string(std::string& targetstring, const std::string& wordToFind, const std::string& replacement) {
+
+    bool eff_replace_string(std::string& targetstring, const std::string& wordToFind, const std::string& replacement)
+    {
         // Create a regular expression pattern to match the whole word
         std::regex wordPattern("\\b" + wordToFind + "\\b");
 
@@ -62,8 +80,11 @@ namespace string_manipulation   {
         // Check if any replacement was made
         return targetstring != wordToFind; // Returns true if a replacement occurred
     }
-    bool eff_replace_string_all_or_first(std::string& targetstring, const std::string& wordToFind, const std::string& replacement, bool replaceAll = true) {
-        if (wordToFind.empty()) {
+
+    bool eff_replace_string_all_or_first(std::string& targetstring, const std::string& wordToFind, const std::string& replacement, bool replaceAll = true)
+    {
+        if (wordToFind.empty())
+        {
             std::cerr << "Error: wordToFind cannot be empty." << std::endl;
             return false;
         }
@@ -72,10 +93,13 @@ namespace string_manipulation   {
         std::regex wordPattern("\\b" + wordToFind + "\\b");
 
         // Replace the word in the target string
-        if (replaceAll) {
+        if (replaceAll)
+        {
             // Replace all occurrences
             targetstring = std::regex_replace(targetstring, wordPattern, replacement);
-        } else {
+        }
+        else
+        {
             // Replace only the first occurrence
             targetstring = std::regex_replace(targetstring, wordPattern, replacement, std::regex_constants::format_first_only);
         }
@@ -83,8 +107,11 @@ namespace string_manipulation   {
         // Check if any replacement was made
         return targetstring.find(wordToFind) != std::string::npos;
     }
-    int eff_replace_string_pick_num(std::string& targetstring, const std::string& wordToFind, const std::string& replacement, int occurrence = -1) {
-        if (wordToFind.empty()) {
+
+    int eff_replace_string_pick_num(std::string& targetstring, const std::string& wordToFind, const std::string& replacement, int occurrence = -1)
+    {
+        if (wordToFind.empty())
+        {
             std::cerr << "Error: wordToFind cannot be empty." << std::endl;
             return 0; // Return 0 to indicate no replacements were made
         }
@@ -116,25 +143,36 @@ namespace string_manipulation   {
         error_message_no_halt("eff_replace_string", "occurrence should be all or a positive integer");
         return 0; // Return 0 to indicate no replacements were made
     }
-    bool chose_replacement(std::string& targetstring, const std::string& wordToFind, const std::string& replacement, int occurrenceToReplace) {
+
+    bool chose_replacement(std::string& targetstring, const std::string& wordToFind, const std::string& replacement, int occurrenceToReplace)
+    {
         int replacedOccurrences = eff_replace_string_pick_num(targetstring, wordToFind, replacement, occurrenceToReplace);
 
-        if (replacedOccurrences == 0) {
+        if (replacedOccurrences == 0)
+        {
             std::cout << "eff_replace_string: No replacements made\n";
             return false;
-        } else if (replacedOccurrences == -1) {
+        }
+        else if (replacedOccurrences == -1)
+        {
             std::cout << "eff_replace_string: Replaced all occurrences\n";
             return true;
-        } else {
+        }
+        else
+        {
             std::cout << "eff_replace_string: Replaced occurrence '" << occurrenceToReplace << "' \n";
             return true;
         }
+        
         return false;
     }
-    bool eff_replace_char(std::string& targetstring, const char charToFind, const std::string& replacement) {
+
+    bool eff_replace_char(std::string& targetstring, const char charToFind, const std::string& replacement)
+    {
         size_t foundPos = targetstring.find(charToFind);
 
-        if (foundPos != std::string::npos) {
+        if (foundPos != std::string::npos)
+        {
             // Replace the character in the target string with the replacement string
             targetstring.replace(foundPos, 1, replacement);
             return true; // A replacement occurred
@@ -142,20 +180,27 @@ namespace string_manipulation   {
 
         return false; // No replacement was made
     }
-    void insertStringAtPosition(std::string& original, const std::string& toInsert, int targetLine, int targetPos) {
+
+    void insertStringAtPosition(std::string& original, const std::string& toInsert, int targetLine, int targetPos)
+    {
         std::string result;
         int lineCount = 1;
         int currentPos = 0;
 
-        for (char character : original) {
-            if (lineCount == targetLine && currentPos == targetPos) {
+        for (char character : original)
+        {
+            if (lineCount == targetLine && currentPos == targetPos)
+            {
                 result += toInsert;  // Insert the string at the specified position
             }
 
-            if (character == '\n') {
+            if (character == '\n')
+            {
                 lineCount++;
                 currentPos = 0;
-            } else {
+            }
+            else
+            {
                 currentPos++;
             }
 
@@ -164,7 +209,9 @@ namespace string_manipulation   {
 
         original = result;
     }
-    void color_for_string_no_comments_or_quotes(std::string& targetstring, const std::string& search_string, const std::string& color){
+
+    void color_for_string_no_comments_or_quotes(std::string& targetstring, const std::string& search_string, const std::string& color)
+    {
         std::string regex_pattern = "\\b"+search_string+"\\b(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
         std::regex string(regex_pattern);
         // bool inside_quotes = false;
@@ -175,15 +222,21 @@ namespace string_manipulation   {
         int length = 0;
         int last_line_num = 0;
 
-        while (std::getline(iss, line)) {               // Loop through lines of the input string
+        while (std::getline(iss, line)) // Loop through lines of the input string
+        {
             std::smatch match;
             std::string::const_iterator searchStart(line.cbegin());
-            while (std::regex_search(searchStart, line.cend(), match, string)) {// Search for the whole word in the line
-                if (last_line_num != lineNum){
+            while (std::regex_search(searchStart, line.cend(), match, string)) // Search for the whole word in the line
+            {
+                if (last_line_num != lineNum)
+                {
                     length = 0;
-                } else {
+                }
+                else
+                {
                     length = length + 9;
                 }
+
                 length = length + match.position() + 1;
                 // std::cout << "start :quote :" << quote_num << " line :" << lineNum << ":" << length << ":" << length + match.length() << "\n";
                 insertStringAtPosition(targetstring, color, lineNum, length - 1);
@@ -195,17 +248,20 @@ namespace string_manipulation   {
             }
             lineNum++;
         }
-        // while (iss >> word){
-        //     if (word.find('"') != std::string::npos && !inside_quotes){
-        //         inside_quotes = true;
-        //     } else if (word.find('"') != std::string::npos && !inside_quotes){
-        //         inside_quotes = false;
-        //     } else if (!inside_quotes && word == "string"){
-        //         targetstring = std::regex_replace(targetstring, string, "\e[94m$&\e[0m");
-        //     }
-        // }
+
+        /* while (iss >> word){
+            if (word.find('"') != std::string::npos && !inside_quotes){
+                inside_quotes = true;
+            } else if (word.find('"') != std::string::npos && !inside_quotes){
+                inside_quotes = false;
+            } else if (!inside_quotes && word == "string"){
+                targetstring = std::regex_replace(targetstring, string, "\e[94m$&\e[0m");
+            }
+        } */
     }
-    void color_for_string_no_comments_or_quotes_bold(std::string& targetstring, const std::string& search_string, const std::string& color){
+
+    void color_for_string_no_comments_or_quotes_bold(std::string& targetstring, const std::string& search_string, const std::string& color)
+    {
         std::string regex_pattern = "\\b"+search_string+"\\b(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
         std::regex string(regex_pattern);
         // bool inside_quotes = false;
@@ -216,7 +272,8 @@ namespace string_manipulation   {
         int length = 0;
         int last_line_num = 0;
 
-        while (std::getline(iss, line)) {               // Loop through lines of the input string
+        while (std::getline(iss, line)) // Loop through lines of the input string
+        {
             std::smatch match;
             std::string::const_iterator searchStart(line.cbegin());
             while (std::regex_search(searchStart, line.cend(), match, string)) {// Search for the whole word in the line
@@ -236,24 +293,29 @@ namespace string_manipulation   {
             }
             lineNum++;
         }
-        // while (iss >> word){
-        //     if (word.find('"') != std::string::npos && !inside_quotes){
-        //         inside_quotes = true;
-        //     } else if (word.find('"') != std::string::npos && !inside_quotes){
-        //         inside_quotes = false;
-        //     } else if (!inside_quotes && word == "string"){
-        //         targetstring = std::regex_replace(targetstring, string, "\e[94m$&\e[0m");
-        //     }
-        // }
+
+        /* while (iss >> word){
+            if (word.find('"') != std::string::npos && !inside_quotes){
+                inside_quotes = true;
+            } else if (word.find('"') != std::string::npos && !inside_quotes){
+                inside_quotes = false;
+            } else if (!inside_quotes && word == "string"){
+                targetstring = std::regex_replace(targetstring, string, "\e[94m$&\e[0m");
+            }
+        } */
     }
-    void color_simple(std::string& targetstring, const std::string& search_string, const std::string& color){
+
+    void color_simple(std::string& targetstring, const std::string& search_string, const std::string& color)
+    {
         std::regex regex_pattern("\\b"+search_string+"\\b(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
         std::regex pattern(regex_pattern);
         std::string result = std::regex_replace(targetstring, pattern, color+search_string+"\e[0m");
     }
-    namespace make_color {
-        void green_char(std::string& targetstring) {
 
+    namespace make_color
+    {
+        void green_char(std::string& targetstring)
+        {
             bool inside_quotes = false;
             bool inside_single_quotes = false;
             bool is_std = false;
@@ -266,103 +328,93 @@ namespace string_manipulation   {
 
             std::string result;  // Initialize an empty result string
 
-            for (size_t i = 0; i < targetstring.length(); ++i) {
-                if  // start of quote
-                    ( targetstring[i] == '"' )
-                        {
-                            // quote found and not already inside quote
-                            if (!inside_quotes) {
-                                inside_quotes = true;
-                            }
-                            // last quote found
-                            else {
-                                result += "\e[31m";
-                                // Exiting a quoted section
-                                inside_quotes = false;
-                            }
-                        }
-                if  // start of single quote
-                    (
-                        targetstring[i] == '\'' &&
-                        !afterDoubleSlash &&
-                        !inside_quotes &&
-                        !special_comment
-                    )
-                        {
-                            if (!inside_single_quotes) {
-                                // Entering a quoted section
-                                inside_single_quotes = true;
-                                result += "\e[94m";
-                            } else {
-                                // Exiting a quoted section
-                                inside_single_quotes = false;
-                            }
-                        }
-                if  // end of single quote
-                    (
-                        targetstring[i - 1] == '\'' &&
-                        targetstring[  i  ] != '"' &&
-                        !inside_single_quotes &&
-                        !afterDoubleSlash &&
-                        !inside_quotes &&
-                        !special_comment
-                    )
-                        {
-                            result += "\e[0m";
-                        }
-                if  // comment is found
-                    (
-                        targetstring[  i  ] == '/' && i + 1 < targetstring.length() &&
-                        targetstring[i + 1] == '/'
-                    )
-                        {
-                            result += "\e[90m";
-                            afterDoubleSlash = true;
-                        }
-                if  // start of special comment found
-                    (
-                        targetstring[  i  ] == '/' &&
-                        targetstring[i + 1] == '*'
-                    )
-                        {
-                            result += "\e[90m";
-                            special_comment = true;
-                        }
-                if  // end of special comment found
-                    (
-                        targetstring[i - 1] == '/' &&
-                        targetstring[i - 2] == '*'
-                    )
-                        {
-                            result += "\e[0m";
-                            special_comment = false;
-                        }
-                if  // include is found
-                    ( targetstring[i] == '#' )
-                        {
-                            include_found = true;
-                            result += "\e[32m";
-                        }
-                if  // include has no headerfile reset color
-                    ( include_found )
-                        {
-                            if  // whitespace or newline is found without ' < ' or ' " ' reset color
-                                (
-                                    (
-                                        targetstring[  i  ] == '\n' ||
-                                        targetstring[  i  ] == '('
-                                    )
-                                    &&
-                                    (
-                                        targetstring[i + 1] != '<' ||
-                                        targetstring[i + 1] != '"'
-                                    )
-                                )
-                                    {
-                                        result += "\e[0m";
-                                        include_found = false;
-                                    }
-                        }
+            for (size_t i = 0; i < targetstring.length(); ++i)
+            {
+                // start of quote
+                if (targetstring[i] == '"')
+                {
+                    if (!inside_quotes) // quote found and not already inside quote
+                    {
+                        inside_quotes = true;
+                    }
+                    else // last quote found
+                    {
+                        result += "\e[31m";
+                        // Exiting a quoted section
+                        inside_quotes = false;
+                    }
+                }
+
+                // start of single quote
+                if (targetstring[i] == '\''
+                &&  !afterDoubleSlash
+                &&  !inside_quotes
+                &&  !special_comment)
+                {
+                    if (!inside_single_quotes) {
+                        // Entering a quoted section
+                        inside_single_quotes = true;
+                        result += "\e[94m";
+                    } else {
+                        // Exiting a quoted section
+                        inside_single_quotes = false;
+                    }
+                }
+
+                // end of single quote
+                if (targetstring[i - 1] == '\''
+                &&  targetstring[  i  ] != '"'
+                &&  !inside_single_quotes
+                &&  !afterDoubleSlash
+                &&  !inside_quotes
+                &&  !special_comment)
+                {
+                    result += "\e[0m";
+                }
+
+                // comment is found
+                if (targetstring[  i  ] == '/' &&  i + 1 < targetstring.length()
+                &&  targetstring[i + 1] == '/')
+                {
+                    result += "\e[90m";
+                    afterDoubleSlash = true;
+                }
+
+                // start of special comment found
+                if (targetstring[  i  ] == '/'
+                &&  targetstring[i + 1] == '*')
+                {
+                    result += "\e[90m";
+                    special_comment = true;
+                }
+
+                // end of special comment found
+                if (targetstring[i - 1] == '/'
+                &&  targetstring[i - 2] == '*')
+                {
+                    result += "\e[0m";
+                    special_comment = false;
+                }
+
+                // include is found
+                if (targetstring[i] == '#')
+                {
+                    include_found = true;
+                    result += "\e[32m";
+                }
+
+                // include has no headerfile reset color
+                if (include_found)
+                {
+                    // whitespace or newline is found without ' < ' or ' " ' reset color
+                    if ((targetstring[i] == '\n' || targetstring[i] == '(')
+                    &&  (targetstring[i + 1] != '<' || targetstring[i + 1] != '"'))
+                    {
+                        result += "\e[0m";
+                        include_found = false;
+                    }
+                }
+
                 if  // std is found and not a comment
                     (
                         (
@@ -884,6 +936,7 @@ namespace string_manipulation   {
             }
             targetstring = result;  // Update the targetstring with the modified result
         }
+
         void nums_outside_quotes(std::string& targetstring) {
             bool inside_quotes = false;
             bool afterDoubleSlash = false;

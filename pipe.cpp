@@ -1,53 +1,73 @@
 #include "pipe.h"
 
-namespace c_pipe {
-    std::string executeCommandAndGetOutput(const std::string& command) {
-        int pipefd[2];                                      // Create a pipe to capture the command's output
-        if (pipe(pipefd) == -1) {
+using namespace std;
+
+namespace c_pipe
+{
+    string executeCommandAndGetOutput(const string& command)
+    {
+        int pipefd[2]; // Create a pipe to capture the command's output
+        if (pipe(pipefd) == -1)
+        {
             perror("pipe");
             return "";
         }
+        
         pid_t childPid = fork();
-        if (childPid == -1) {
+        if (childPid == -1)
+        {
             perror("fork");
             return "";
         }
-        if (childPid == 0) {                                // Child process
-            close(pipefd[1]);                               // Close the write end of the pipe, as it's not needed in the child
-            dup2(pipefd[0], STDIN_FILENO);                  // Redirect the standard output to the write end of the pipe
+        
+        
+        if (childPid == 0) // Child process
+        {
+            close(pipefd[1]); // Close the write end of the pipe, as it's not needed in the child
+            dup2(pipefd[0], STDIN_FILENO); // Redirect the standard output to the write end of the pipe
             close(pipefd[0]);
             const char* cmd = command.c_str();
-            execlp(cmd, cmd, nullptr);                      // Execute the command
-            perror("execlp");                               // If execlp fails, print an error message and exit
+            execlp(cmd, cmd, nullptr); // Execute the command
+            perror("execlp"); // If execlp fails, print an error message and exit
             exit(1);
-        } else {                                            // Parent process
-            close(pipefd[0]);                               // Close the read end of the pipe, as it's not needed in the parent
-            constexpr size_t bufferSize = 4096;             // Create a buffer to read the command's output
+        }
+        else // Parent process
+        {
+            close(pipefd[0]); // Close the read end of the pipe, as it's not needed in the parent
+            constexpr size_t bufferSize = 4096; // Create a buffer to read the command's output
             char buffer[bufferSize];
             std::string output = "";
             ssize_t bytesRead;
-            while ((bytesRead = read(pipefd[1], buffer, bufferSize)) > 0) { // Read the command's output and capture it into the 'output' string
+            while ((bytesRead = read(pipefd[1], buffer, bufferSize)) > 0) // Read the command's output and capture it into the 'output' string
+            {
                 output += std::string(buffer, bytesRead);
             }
-            close(pipefd[1]);                               // Close the write end of the pipe
+            close(pipefd[1]); // Close the write end of the pipe
             int status;
-            waitpid(childPid, &status, 0);                  // Wait for the child process to finish
+            waitpid(childPid, &status, 0); // Wait for the child process to finish
             return output;
         }
     }
-    std::string executeCommand(const std::string& command) {          // uses pipes to search for string in output of executed command
+
+    string executeCommand(const string &command) // uses pipes to search for string in output of executed command
+    {
         std::string result; std::array<char, 128> buffer;
 
         FILE* pipe = popen(command.c_str(), "r");
-        if (!pipe) {
+        if (!pipe)
+        {
             std::cerr << "Error executing the command." << std::endl;
             return "";
         }
-        while (fgets(buffer.data(), buffer.size(), pipe) != nullptr) {
+        
+        while (fgets(buffer.data(), buffer.size(), pipe) != nullptr)
+        {
             result += buffer.data();
         }
+        
         pclose(pipe); return result;
     }
+
     std::string regex_escape(const std::string& input) {
         // Characters to escape: \ ^ $ . | ? * + ( ) [ ] { }
         std::string specialChars = "\\^$.|?*+()[]{}";

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <unordered_map>
+// #include <unordered_map>
 #include <sys/stat.h>
 #include <ctime>
 #include <unistd.h>
@@ -25,7 +25,8 @@ private:
 public:
     MailChecker() : last_time_mail_checked(0) {}
 
-    bool time_to_check_mail() {
+    bool time_to_check_mail()
+    {
         const char* temp = std::getenv("MAILCHECK");
         if (temp == nullptr) return false;
 
@@ -36,23 +37,30 @@ public:
         return seconds == 0 || ((now - last_time_mail_checked) >= seconds);
     }
 
-    void reset_mail_timer() {
+    void reset_mail_timer()
+    {
         last_time_mail_checked = std::time(nullptr);
     }
 
-    void add_mail_file(const std::string& filename, const std::string& msg) {
+    void add_mail_file(const std::string& filename, const std::string& msg)
+    {
         struct stat finfo;
-        if (stat(filename.c_str(), &finfo) == 0) {
+        if (stat(filename.c_str(), &finfo) == 0)
+        {
             FileInfo file_info{filename, msg, finfo.st_atime, finfo.st_mtime, finfo.st_size, MBOX_INITIALIZED};
             mailfiles.push_back(file_info);
         }
     }
 
-    void check_mail() {
-        for (auto& file_info : mailfiles) {
+    void check_mail()
+    {
+        for (auto& file_info : mailfiles)
+        {
             struct stat finfo;
-            if (stat(file_info.name.c_str(), &finfo) == 0) {
-                if (finfo.st_mtime > file_info.mod_time) {
+            if (stat(file_info.name.c_str(), &finfo) == 0)
+            {
+                if (finfo.st_mtime > file_info.mod_time)
+                {
                     std::cout << "You have new mail in " << file_info.name << std::endl;
                     file_info.access_time = finfo.st_atime;
                     file_info.mod_time = finfo.st_mtime;

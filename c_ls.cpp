@@ -2,6 +2,7 @@
 #include <iostream>
 
 namespace fs = std::filesystem;
+using namespace std;
 
 namespace c_ls_tools
 {
@@ -15,7 +16,7 @@ namespace c_ls_tools
         return false;
     }
 
-    bool endsWithExtension(const fs::directory_entry& entry, const std::string& extension)
+    bool endsWithExtension(const fs::directory_entry &entry, const string &extension)
     {
         std::string entryPath = entry.path().string();
         size_t dotPosition = entryPath.rfind('.');
@@ -29,12 +30,13 @@ namespace c_ls_tools
         return false;                                       // No extension found in the entry's path
     }
     
-    void c_ls(const std::string& full_PATH_to_dir, bool list_hidden = false)
+    void c_ls(const string &full_PATH_to_dir, bool list_hidden = false)
     {
-        std::cout << "Contents of directory ( " << full_PATH_to_dir << " ):\n";
-        try {
-            std::vector<fs::directory_entry> entries;       // Create a vector to store directory entries
-            for (const auto& entry : fs::directory_iterator(full_PATH_to_dir))
+        /* cout << "Contents of directory ( " << full_PATH_to_dir << " ):\n"; */
+        try
+        {
+            vector<fs::directory_entry> entries; // Create a vector to store directory entries
+            for (const auto &entry : fs::directory_iterator(full_PATH_to_dir))
             {
                 // If list_hidden is false, skip hidden files and directories
                 if (!list_hidden && entry.path().filename().string().front() == '.')
@@ -45,39 +47,42 @@ namespace c_ls_tools
                 entries.push_back(entry);
             }
 
-            // Sort the vector alphabetically by filename
-            std::sort(entries.begin(), entries.end(), [](const fs::directory_entry& a, const fs::directory_entry& b)
-            {
-                return a.path().filename() < b.path().filename();
-            });
+            std::sort( // Sort the vector alphabetically by filename
+                entries.begin(),
+                entries.end(),
+                [](const fs::directory_entry& a, const fs::directory_entry& b)
+                {
+                    return a.path().filename() < b.path().filename();
+                }
+            );
 
             // Print the sorted contents with color coding for directories and executables
-            for (const auto& entry : entries)
+            for (const auto &entry : entries)
             {
-                std::cout << (endsWithExtension(entry, ".msi")  ? "\033[32m" : "");  // Set text color to    green   for     .msi    files
-                std::cout << (endsWithExtension(entry, ".exe")  ? "\033[32m" : "");  // Set text color to    green   for     .exe    files
-                std::cout << (endsWithExtension(entry, ".sh")   ? "\033[32m" : "");  // Set text color to    green   for     .sh     files
-                std::cout << (endsWithExtension(entry, ".gz")   ? "\033[31m" : "");  // Set text color to    red     for     .gz     files
-                std::cout << (endsWithExtension(entry, ".xz")   ? "\033[31m" : "");  // Set text color to    red     for     .xz     files
-                std::cout << (endsWithExtension(entry, ".h")    ? "\033[35m" : "");  // Set text color to    red     for     .h      files
-                std::cout << (endsWithExtension(entry, ".conf") ? "\033[33m" : "");  // Set text color to    red     for     .conf   files
-                std::cout << (endsWithExtension(entry, ".c")    ? "\033[92m" : "");  // Set text color to    red     for     .c      files
-                std::cout << (endsWithExtension(entry, ".cpp")  ? "\033[92m" : "");  // Set text color to    red     for     .cpp    files
-                std::cout << (is_executable(entry) ? "\033[32m" : "");               // Set text color to    green   for     exec    files
-                std::cout << (entry.is_directory() ? "\e[1m\e[34m" : "");            // Set text color to    blue    for     dirs
-                std::cout << entry.path().filename();
-                std::cout << "\033[0m"; // Reset text color to default
-                std::cout << std::endl; // Print a newline
+                cout << (endsWithExtension(entry, ".msi")  ? "\033[32m" : "");  // Set text color to    green   for     .msi    files
+                cout << (endsWithExtension(entry, ".exe")  ? "\033[32m" : "");  // Set text color to    green   for     .exe    files
+                cout << (endsWithExtension(entry, ".sh")   ? "\033[32m" : "");  // Set text color to    green   for     .sh     files
+                cout << (endsWithExtension(entry, ".gz")   ? "\033[31m" : "");  // Set text color to    red     for     .gz     files
+                cout << (endsWithExtension(entry, ".xz")   ? "\033[31m" : "");  // Set text color to    red     for     .xz     files
+                cout << (endsWithExtension(entry, ".h")    ? "\033[35m" : "");  // Set text color to    red     for     .h      files
+                cout << (endsWithExtension(entry, ".conf") ? "\033[33m" : "");  // Set text color to    red     for     .conf   files
+                cout << (endsWithExtension(entry, ".c")    ? "\033[92m" : "");  // Set text color to    red     for     .c      files
+                cout << (endsWithExtension(entry, ".cpp")  ? "\033[92m" : "");  // Set text color to    red     for     .cpp    files
+                cout << (is_executable(entry) ? "\033[32m" : "");               // Set text color to    green   for     exec    files
+                cout << (entry.is_directory() ? "\e[1m\e[34m" : "");            // Set text color to    blue    for     dirs
+                cout << entry.path().filename();
+                cout << "\033[0m"; // Reset text color to default
+                cout << endl; // Print a newline
             }
         }
-        catch (const std::exception& e)
+        catch (const exception& e)
         {
-            std::cerr << "Error: " << e.what() << std::endl;
+            cerr << "Error: " << e.what() << endl;
         }
     }
 }
 
-void c_ls(const std::vector<std::string>& args)
+void c_ls(const vector<string>& args)
 {
     if (args[1] == "-h")
     {
