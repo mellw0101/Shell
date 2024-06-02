@@ -20,7 +20,6 @@
 #include "pipe.h"
 #include "readline.h"
 #include "run.h"
-#include <asm_string/asm_string.h>
 
 using namespace std;
 
@@ -190,7 +189,6 @@ void executeCommand(const vector<string> &raw_args)
             {
                 std::cerr << "Error: " << e.what() << std::endl;
 
-
                 std::vector<char*> argv;
                 for (const std::string& arg : args)
                 {
@@ -256,8 +254,12 @@ int main()
         if (ctrlCPressed)
         {
             cout << "\n";
-            ctrlCPressed = 0; // Reset the flag
-            continue;         // Skip to the next iteration
+            
+            // Reset the flag
+            ctrlCPressed = 0;
+            
+            // Skip to the next iteration
+            continue;
         }
 
         userInput = sr.readLine();
@@ -295,35 +297,40 @@ int main()
                 stringstream com;
                 for (const string &cmd : commands) com << cmd << " ";
                 
-                vector<std::string> args;
+                vector<string> args;
                 istringstream iss(com.str());
                 string token;
-                while (iss >> token) args.push_back(token);
+                while (iss >> token)
+                {
+                    args.push_back(token);
+                }
 
                 if (args.size() == 3)
                 {
                     // running first command in pipe and saving output to string output
-                    std::string output = c_pipe::executeCommand(args[0]);
+                    string output = c_pipe::executeCommand(args[0]);
                     if (args[1] == "find") c_pipe::search_string_all(output, args[2]);
                     else error_message_no_halt("Usage: pipes", "<command> | <find> <letter or string to find");
                 }
                 else if (args.size() == 4)
                 {
-                    std::string output = c_pipe::executeCommand(args[0] + " " + args[1]);
+                    string output = c_pipe::executeCommand(args[0] + " " + args[1]);
                     if (args[2] == "find") c_pipe::search_string_all(output, args[3]);
                     else error_message("usage pipes", "<command> | <find> <letter or string to find");
                 }
             }
             else // No pipe detected, split the input into tokens
             {
-                std::vector<std::string> args;
-                std::istringstream iss(userInput);
-                std::string token;
+                vector<std::string> args;
+                istringstream iss(userInput);
+                string token;
                 while (iss >> token)
                 {
                     args.push_back(token);
                 }
-                if (!args.empty()) // Execute the command if args are not empty
+                
+                // Execute the command if args are not empty
+                if (!args.empty())
                 {
                     executeCommand(args);
                 }

@@ -119,7 +119,7 @@ std::string source_o(const std::string& name)
 struct args
 {
     std::string o_args = "-O3 -funroll-loops -Rpass=loop-vectorize -flto -m64 -Wall -Werror -static -march=native -stdlib=libc++";
-    std::string f_args = "-flto -s -static -L/usr/avr/13.2.0 -l:libgcc.a -march=skylake -mtune=skylake  -L/home/mellw/zlib -l:libz.a  -L/usr/lib -l:libc++.a -L/usr/lib -l:libc++abi.a /usr/lib/libasmlib.a /usr/lib/libclib.a";
+    std::string f_args = "-flto -s -static -L/usr/avr/13.2.0 -l:libgcc.a -march=skylake -mtune=skylake  -L/home/mellw/zlib -l:libz.a  -L/usr/lib -l:libc++.a -L/usr/lib -l:libc++abi.a";
 };
 
 int make_o()

@@ -11,7 +11,8 @@
 
 using namespace std;
 
-class SimpleReadline {
+class SimpleReadline
+{
 private:
     vector<string> history;
     struct termios orig_termios;

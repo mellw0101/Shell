@@ -1,6 +1,5 @@
 #include "readline.h"
 #include "base_tools.h"
-#include <asm_string/asm_string.h>
 
 namespace fs = std::filesystem;
 
@@ -81,10 +80,10 @@ string SimpleReadline::readLine()
                     }
                     
                     historyIndex--;
-                    std::cout << "\033[2K\r" << prompt << history[historyIndex];
+                    cout << "\033[2K\r" << prompt << history[historyIndex];
                     line = history[historyIndex];
                     cursorPos = line.length();
-                    std::cout.flush();
+                    cout.flush();
                     continue;
                 }
 
@@ -176,9 +175,11 @@ string SimpleReadline::readLine()
                 {
                     while (cursorPos > 0 && line[cursorPos - 1] == ' ') cursorPos--;
                     while (cursorPos > 0 && line[cursorPos - 1] != ' ') cursorPos--;
-                    std::cout << "\033[2K\r" << prompt << line;
-                    std::cout << "\033[" << (cursorPos + length) << "G";
-                    std::cout.flush();
+
+                    cout << "\033[2K\r" << prompt << line;
+                    cout << "\033[" << (cursorPos + length) << "G";
+                    cout.flush();
+
                     continue;
                 }
 
@@ -187,9 +188,11 @@ string SimpleReadline::readLine()
                 {
                     while (cursorPos < line.size() && line[cursorPos + 1] != ' ') cursorPos++;
                     while (cursorPos < line.size() && line[cursorPos + 1] == ' ') cursorPos++;
-                    std::cout << "\033[2K\r" << prompt << line;
-                    std::cout << "\033[" << (cursorPos + length) << "G";
-                    std::cout.flush();
+
+                    cout << "\033[2K\r" << prompt << line;
+                    cout << "\033[" << (cursorPos + length) << "G";
+                    cout.flush();
+
                     continue;
                 }
             }
@@ -204,9 +207,11 @@ string SimpleReadline::readLine()
             {
                 line.erase(cursorPos - 1, 1);
                 cursorPos--;
+                
                 cout << "\033[2K\r" << prompt << line;
                 cout << "\033[" << (cursorPos + length) << "G";
                 cout.flush();
+
                 continue;
             }
 
@@ -252,39 +257,49 @@ string SimpleReadline::readLine()
             {
                 line.insert(cursorPos, 1, c);
                 cursorPos++;
-                std::cout << "\033[2K\r" << prompt << line;
-                std::cout << "\033[" << (cursorPos + length) << "G";
-                std::cout.flush();
+
+                cout << "\033[2K\r" << prompt << line;
+                cout << "\033[" << (cursorPos + length) << "G";
+                cout.flush();
+
                 continue;
             }
         }
     }
     
-    cout << std::endl;
-    if (!line.empty()) history.push_back(line);
+    cout << '\n';
+    if (!line.empty())
+    {
+        history.push_back(line);
+    }
+
     return line;
 }
 
-void SimpleReadline::loadHistoryFromFile(const std::string &filePath)
+void SimpleReadline::loadHistoryFromFile(const string &filePath)
 {
-    std::ifstream historyFile(filePath);
+    ifstream historyFile(filePath);
     if (historyFile.is_open())
     {
-        std::string line;
-        while (std::getline(historyFile, line))
+        string line;
+        while (getline(historyFile, line))
         {
-            history.push_back(line);  // use the history vector of your SimpleReadline object
+            // use the history vector of your SimpleReadline object
+            history.push_back(line);
         }
+
         historyFile.close();
     }
 }
 
-void SimpleReadline::appendHistoryToFile(const std::string &line, const std::string &filePath)
+void SimpleReadline::appendHistoryToFile(const string &line, const string &filePath)
 {
-    std::ofstream historyFile(filePath, std::ios::app); // Open file in append mode
+    // Open file in append mode
+    ofstream historyFile(filePath, ios::app);
     if (historyFile.is_open())
     {
-        historyFile << line << std::endl;  // Append the line and a newline character to the file
+        // Append the line and a newline character to the file
+        historyFile << line << '\n';
         historyFile.close();
     }
 }
