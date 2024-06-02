@@ -24,10 +24,12 @@ void error_message(const std::string& program, const std::string& message);
 void error_message_no_halt(const std::string& program, const std::string& message);
 void set_env_var();
 bool check_extension(const std::string& filename, const std::string& extension);
-namespace get_vars {
+namespace get_vars
+{
     std::string get_PATH_var();
     std::string get_XAUTHORITY_var();
-    namespace get_USER {
+    namespace get_USER
+    {
         std::string get_USER_var();
         std::string getUserName();
     }
@@ -44,13 +46,17 @@ namespace get_vars {
     std::string get_XDG_RUNTIME_DIR_var();
     std::string get_CURRENT_WORKING_DIRECTORY_var();
 }
-namespace args {
+
+namespace args
+{
     bool find_arg(const std::vector<std::string>& args, const std::string& flag);
     std::string processArgs(const std::vector<std::string>& args, const std::string& flag);
     std::string processArgs_2(const std::vector<std::string>& args, const std::string& flag);
     std::vector<std::string> combineArgsBetweenQuotes(const std::vector<std::string>& input);
 }
-namespace tools {
+
+namespace tools
+{
     void inputF(const std::string& input, const std::string& full_path);
     void create_file(const std::string& full_PATH_to_file);
     void cddir(const std::string& full_PATH_to_dir);

@@ -20,6 +20,7 @@
 #include "pipe.h"
 #include "readline.h"
 #include "run.h"
+#include <asm_string/asm_string.h>
 
 using namespace std;
 
@@ -32,7 +33,8 @@ void ctrlCHandler(int signalNumber)
     ctrlCPressed = 1;
 }
 
-enum Command {
+enum Command
+{
     CF,
     EFF,
     ITF,
@@ -61,7 +63,8 @@ enum Command {
 
 Command stringToEnum(const string &command)
 {
-    static const unordered_map<string, Command> commandMap = {
+    static const unordered_map<string, Command> commandMap =
+    {
         {"cf", CF},
         {"eff", EFF},
         {"itf", ITF},
@@ -179,7 +182,9 @@ void executeCommand(const vector<string> &raw_args)
             try
             {
                 auto asyncTask = runBinaryAsync_with_env_wargs(binaryPath, args);
-                asyncTask.get(); // Wait for the async task to finish
+                
+                // Wait for the async task to finish
+                asyncTask.get();
             }
             catch (const std::exception& e)
             {
@@ -237,7 +242,8 @@ void executeCommand(const vector<string> &raw_args)
 
 int main()
 {
-    signal(SIGINT, ctrlCHandler); // Register the signal handler
+    // Register the signal handler
+    signal(SIGINT, ctrlCHandler);
     setenv("PATH", get_vars::get_PATH_var().c_str(), 1);
     SimpleReadline sr;
     sr.loadHistoryFromFile(get_vars::get_HOME_var() + "/.ShellHistory");
@@ -250,11 +256,12 @@ int main()
         if (ctrlCPressed)
         {
             cout << "\n";
-            ctrlCPressed = 0;                               // Reset the flag
-            continue;                                       // Skip to the next iteration
+            ctrlCPressed = 0; // Reset the flag
+            continue;         // Skip to the next iteration
         }
 
         userInput = sr.readLine();
+
         // User pressed Ctrl+D or enters exit as a command
         if (userInput == "exit")
         {

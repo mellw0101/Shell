@@ -69,16 +69,19 @@ void clang(const std::string& outputfile, const std::string& inputfile, const st
 
 void link(const std::string& outputExecutable, const std::vector<std::string>& objectFiles, const std::string& args, int threadId, std::promise<int>& resultPromise)
 {
-    auto startTime = std::chrono::high_resolution_clock::now(); // Record the start time
+    // Record the start time
+    auto startTime = std::chrono::high_resolution_clock::now();
 
     std::string command = "clang++";
 
     for (const std::string& objFile : objectFiles)
     {
-        command += " " + objFile; // Add each object file to the command
+        // Add each object file to the command
+        command += " " + objFile;
     }
 
-    command += " " + args; // Add additional arguments
+    // Add additional arguments
+    command += " " + args;
 
     command += " -o " + outputExecutable;
 
@@ -86,7 +89,8 @@ void link(const std::string& outputExecutable, const std::vector<std::string>& o
 
     int result = std::system(command.c_str());
 
-    auto endTime = std::chrono::high_resolution_clock::now(); // Record the end time
+    // Record the end time
+    auto endTime = std::chrono::high_resolution_clock::now();
 
     if (result == 0)
     {
@@ -98,7 +102,8 @@ void link(const std::string& outputExecutable, const std::vector<std::string>& o
         std::cout << "Thread " << threadId << " failed to link '" << outputExecutable << "'\n";
     }
 
-    resultPromise.set_value(result); // Set the promise with the result
+    // Set the promise with the result
+    resultPromise.set_value(result);
 }
 
 std::string output_o(const std::string& name)
@@ -114,7 +119,7 @@ std::string source_o(const std::string& name)
 struct args
 {
     std::string o_args = "-O3 -funroll-loops -Rpass=loop-vectorize -flto -m64 -Wall -Werror -static -march=native -stdlib=libc++";
-    std::string f_args = "-flto -s -static -L/usr/avr/13.2.0 -l:libgcc.a -march=skylake -mtune=skylake  -L/home/mellw/zlib -l:libz.a  -L/usr/lib -l:libc++.a -L/usr/lib -l:libc++abi.a ";
+    std::string f_args = "-flto -s -static -L/usr/avr/13.2.0 -l:libgcc.a -march=skylake -mtune=skylake  -L/home/mellw/zlib -l:libz.a  -L/usr/lib -l:libc++.a -L/usr/lib -l:libc++abi.a /usr/lib/libasmlib.a /usr/lib/libclib.a";
 };
 
 int make_o()

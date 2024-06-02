@@ -1,5 +1,6 @@
 #include "readline.h"
 #include "base_tools.h"
+#include <asm_string/asm_string.h>
 
 namespace fs = std::filesystem;
 
@@ -34,9 +35,9 @@ string SimpleReadline::readLine()
     string line;
     char c;
 
-    string red = "\e[31m";
+    string red        = "\e[31m";
     string bold_green = "\e[1m\e[32m";
-    string reset = "\e[0m";
+    string reset      = "\e[0m";
     string bold_white = "\e[1m\e[37m";
 
     string dir = fs::current_path().string();

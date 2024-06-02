@@ -13,6 +13,7 @@ namespace c_ls_tools
         {
             return (st.st_mode & S_IXUSR) != 0;
         }
+
         return false;
     }
 
@@ -27,7 +28,9 @@ namespace c_ls_tools
             std::string entryExtension = entryPath.substr(dotPosition);
             return entryExtension == extension;
         }
-        return false;                                       // No extension found in the entry's path
+
+        // No extension found in the entry's path
+        return false;
     }
     
     void c_ls(const string &full_PATH_to_dir, bool list_hidden = false)
@@ -35,7 +38,8 @@ namespace c_ls_tools
         /* cout << "Contents of directory ( " << full_PATH_to_dir << " ):\n"; */
         try
         {
-            vector<fs::directory_entry> entries; // Create a vector to store directory entries
+            // Create a vector to store directory entries
+            vector<fs::directory_entry> entries;
             for (const auto &entry : fs::directory_iterator(full_PATH_to_dir))
             {
                 // If list_hidden is false, skip hidden files and directories
@@ -43,11 +47,14 @@ namespace c_ls_tools
                 {
                     continue;
                 }
+            
                 // Store the directory entries in the vector
                 entries.push_back(entry);
             }
 
-            std::sort( // Sort the vector alphabetically by filename
+            // Sort the vector alphabetically by filename
+            std::sort
+            (
                 entries.begin(),
                 entries.end(),
                 [](const fs::directory_entry& a, const fs::directory_entry& b)
@@ -68,11 +75,11 @@ namespace c_ls_tools
                 cout << (endsWithExtension(entry, ".conf") ? "\033[33m" : "");  // Set text color to    red     for     .conf   files
                 cout << (endsWithExtension(entry, ".c")    ? "\033[92m" : "");  // Set text color to    red     for     .c      files
                 cout << (endsWithExtension(entry, ".cpp")  ? "\033[92m" : "");  // Set text color to    red     for     .cpp    files
-                cout << (is_executable(entry) ? "\033[32m" : "");               // Set text color to    green   for     exec    files
-                cout << (entry.is_directory() ? "\e[1m\e[34m" : "");            // Set text color to    blue    for     dirs
+                cout << (is_executable(entry) ? "\033[32m" : "");                         // Set text color to    green   for     exec    files
+                cout << (entry.is_directory() ? "\e[1m\e[34m" : "");                      // Set text color to    blue    for     dirs
                 cout << entry.path().filename();
-                cout << "\033[0m"; // Reset text color to default
-                cout << endl; // Print a newline
+                cout << "\033[0m";                                                        // Reset text color to default
+                cout << '\n';                                                             // Print a newline
             }
         }
         catch (const exception& e)
